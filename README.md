@@ -1,23 +1,22 @@
-@'
 # dockerized-app
 
-Minimal Dockerized Flask app with Postgres + Redis using Docker Compose.
+Минимальное Dockerized Flask-приложение с Postgres + Redis через Docker Compose.
 
-## What is this?
-Small Flask API:
+## Что это
+Небольшой API на Flask:
 - `GET /` — hello
-- `GET /health` — checks Postgres + Redis connectivity
-- `GET /live` — lightweight liveness endpoint (used for container healthcheck)
+- `GET /health` — проверяет доступность Postgres и Redis
+- `GET /live` — лёгкий liveness endpoint (используется healthcheck контейнера)
 
-## Tech
+## Технологии
 - Python (Flask)
 - Postgres
 - Redis
 - Docker + Docker Compose
 
-## Run (3 commands)
-```bash
-cp .env.example .env
+## Как запустить (3 команды)
+### PowerShell (Windows)
+```powershell
+Copy-Item .env.example .env
 docker compose up --build -d
-Invoke-WebRequest http://localhost:8000/health -UseBasicParsing | Select-Object -Expand Content
-
+curl.exe http://localhost:8000/health
