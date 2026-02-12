@@ -31,6 +31,22 @@ def check_redis():
 def hello():
     return "Hello from Dockerized Flask App!\n"
 
+# Liveness: быстрый, без зависимостей
+@app.get("/live")
+def live():
+    return jsonify({"status": "alive"}), 200
+
+# Readiness: зависимости должны быть доступны (DB + Redis)
+@app.get("/ready")
+def ready():
+    try:
+        check_postgres()
+        check_redis()
+        return jsonify({"status": "ready"}), 200
+    except Exception as e:
+        return jsonify({"status": "not_ready", "error": type(e).__name__}), 503
+
+# Health: подробный статус по компонентам
 @app.get("/health")
 def health():
     status = {"app": "ok", "postgres": "ok", "redis": "ok"}
@@ -47,10 +63,6 @@ def health():
 
     ok = all(v == "ok" for v in status.values())
     return jsonify(status), (200 if ok else 503)
-
-@app.get("/live")
-def live():
-    return jsonify({"status": "alive"}), 200
 
 if __name__ == "__main__":
     host = os.getenv("HOST", "0.0.0.0")
